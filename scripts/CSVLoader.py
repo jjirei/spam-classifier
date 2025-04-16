@@ -2,6 +2,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import string
+import joblib
 
 # Functions
 def clean_text(text):
@@ -15,6 +16,9 @@ df.columns = ['label', 'message']
 df['length'] = df['message'].apply(len)
 df['label_num'] = df['label'].map({'ham': 0, 'spam': 1})
 df['clean_message'] = df['message'].apply(clean_text)
+#print (df.head())
+#print (df.isnull().sum())
+#print (df['label'].value_counts())
 
 # Tokenize and Vectorize
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -39,30 +43,32 @@ model.fit(X_train, y_train)
 # Evaluate classifier
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 y_pred = model.predict(X_test)
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-
-# Print results
-#print (df.head())
-#print (df.isnull().sum())
-#print (df['label'].value_counts())
 #print (f"CONFUSION MATRIX")
 #print (confusion_matrix(y_test, y_pred))
 #print (f"CLASSIFICATION REPORT")
 #print (classification_report(y_test, y_pred))
-print (f"ACCURACY: {accuracy_score(y_test, y_pred)}")
-print (f"PRECISION: {precision_score(y_test, y_pred)}")
-print (f"RECALL: {recall_score(y_test, y_pred)}")
-print (f"F1 SCORE: {f1_score(y_test, y_pred)}")
 
-# Confusion Matrix
-cm = confusion_matrix(y_test, y_pred)
-disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['Ham', 'Spam'])
-disp.plot(cmap=plt.cm.Blues)
-plt.title("Confusion Matrix")
-plt.show()
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+#print (f"ACCURACY: {accuracy_score(y_test, y_pred)}")
+#print (f"PRECISION: {precision_score(y_test, y_pred)}")
+#print (f"RECALL: {recall_score(y_test, y_pred)}")
+#print (f"F1 SCORE: {f1_score(y_test, y_pred)}")
 
-# Visualize Data
+# Save the model and vectorizer
+joblib.dump(model, 'spam_classifier.pkl')
+joblib.dump(vectorizer, 'tfidf_vectorizer.pkl')
+
+## Visualizations
+
+# Distribution of Ham and Spam
 # sns.countplot(x='label', data=df)
 # sns.histplot(data=df, x='length', hue='label', bins=50, kde=True)
 # plt.title("Spam vs Ham Distribution")
 # plt.show()
+
+# Confusion Matrix
+#cm = confusion_matrix(y_test, y_pred)
+#disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['Ham', 'Spam'])
+#disp.plot(cmap=plt.cm.Blues)
+#plt.title("Confusion Matrix")
+#plt.show()
