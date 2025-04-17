@@ -1,6 +1,10 @@
 import requests
 
-url = "http://127.0.0.1:5000/predict"
+# Flask endpoint
+#url = "http://127.0.0.1:5000/predict"
+
+# FastAPI endpoint
+url = "http://127.0.0.1:8000/predict"
 headers = {"Content-Type": "application/json"}
 
 data = {"message": "Congratulations! You’ve won a prize."}
