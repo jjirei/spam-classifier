@@ -1,10 +1,18 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pickle
 import os
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 model = None
 vectorizer = None
 
@@ -46,6 +54,6 @@ def predict(data: Message):
     text = data.message
     features = vectorizer.transform([text])
     prediction = model.predict(features)[0]
-    label = "spam" if int(prediction) == 1 else "not spam"
-    return {"prediction": label}
+    #label = "spam" if int(prediction) == 1 else "not spam"
+    return {"prediction": int(prediction)}
 
